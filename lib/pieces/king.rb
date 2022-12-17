@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-require_relative 'piece'
+require './lib/pieces/piece.rb'
 class King < Piece
   def in_check?; end
 
   def valid_moves
     movement_pattern.each do |move|
-      @position.add(move) if valid_move?(move)
+      add(move, @position) if valid_move?(move)
     end
   end
 
   def valid_move?(move)
-    !((@board.piece_at(@position.add(move)).color == @color) || piece_blocking_move?(move) || @board.attacked_square?(@position.add(move)))
+    !((@board.piece_at(add(move, @position)).color == @color) || piece_blocking_move?(move) || @board.attacked_square?(add(move, @position)))
   end
 
   def movement_pattern

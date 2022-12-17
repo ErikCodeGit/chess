@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'piece'
+require './lib/pieces/piece.rb'
 class Queen < Piece
 end

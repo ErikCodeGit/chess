@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require './lib/pieces/king'
 class Player
   attr_accessor :name, :color, :id, :king
 
@@ -7,7 +8,6 @@ class Player
     @color = color
     @id =  id
     @name = name
-    @king = King.new(color)
   end
 
   def in_checkmate?

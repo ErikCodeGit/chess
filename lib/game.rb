@@ -13,6 +13,8 @@ class Game
     @player2 = Player.new(:black, 2)
     @current_player = @player1
     @board = Board.new
+    @player1.king = @board.grid[0][4]
+    @player2.king = @board.grid[7][4]
     start_game
   end
 
@@ -25,8 +27,8 @@ class Game
 
   def game_loop
     loop do
-      prompt_player_move_start
-      prompt_player_move_end
+      display_board
+      p @board.move_piece(prompt_player_move_start, prompt_player_move_end)
       break if winner
 
       flip_current_player
@@ -34,7 +36,8 @@ class Game
   end
 
   def winner
-    @board.check_winner
+    @player1 if @player1.in_checkmate?
+    @player2 if @player2.in_checkmate?
   end
 
   def flip_current_player
