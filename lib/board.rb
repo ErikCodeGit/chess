@@ -32,14 +32,14 @@ class Board
   end
 
   def move_piece(start_position, end_position)
-    return false unless @grid[start_position[0]][start_position[1]].valid_move?(end_position)
+    return false unless @grid[start_position[:x]][start_position[:y]].valid_move?(end_position)
 
-    @grid[end_position[0]][end_position[1]] = @grid[start_position[0]][start_position[1]]
-    @grid[start_position[0]][start_position[1]] = nil
+    @grid[end_position[0]][end_position[1]] = @grid[start_position[:x]][start_position[:y]]
+    @grid[start_position[:x]][start_position[:y]] = nil
   end
 
   def self.parse_coordinates(coordinates)
-    [coordinates[0].downcase.codepoints[0] - 97, coordinates[1].to_i - 1]
+    { x: coordinates[0].downcase.codepoints[0] - 97, y: coordinates[1].to_i - 1 }
   end
 
   def piece_at(position)
