@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require './lib/pieces/piece'
+require './lib/pieces/piece.rb'
 class Pawn < Piece
 
   def valid_move?(move)
