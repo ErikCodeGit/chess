@@ -10,4 +10,5 @@ module Constants
   QUEEN_SYMBOL = { white: '♛', black: '♕' }.freeze
   KING_SYMBOL = { white: '♚', black: '♔' }.freeze
   EMPTY_SYMBOL = '■'
+  NOT_YOUR_PIECE_ERROR = 'That is not your piece!'
 end

@@ -58,4 +58,53 @@ class Board
   def piece_at(position)
     @grid[position[0]][position[1]]
   end
+
+  def pieces_at(positions)
+    result = []
+    positions.each do |position|
+      result << piece_at(position)
+    end
+    result
+  end
+
+  def pieces_in_column(start_position, end_position)
+    return unless start_position[0] == end_position[0]
+
+    increment = start_position[1] <= end_position[1] ? 1 : -1
+    result = []
+    current_position = start_position.dup
+    until current_position == end_position
+      result << piece_at(current_position)
+      current_position[1] += increment
+    end
+    result
+  end
+
+  def pieces_in_row(start_position, end_position)
+    return unless start_position[1] == end_position[1]
+
+    increment = start_position[0] <= end_position[0] ? 1 : -1
+    result = []
+    current_position = start_position.dup
+    until current_position == end_position
+      result << piece_at(current_position)
+      current_position[0] += increment
+    end
+    result
+  end
+
+  def pieces_in_diagonal(start_position, end_position)
+    # x and y of two points along a diagonal are always equal
+    difference = subtract(end_position, start_position)
+    return unless difference[0] == difference[1]
+
+    increment = start_position[0] <= end_position[0] ? 1 : -1
+    result = []
+    current_position = start_position.dup
+    until current_position == end_position
+      result << piece_at(current_position)
+      current_position[0] += increment
+    end
+    result
+  end
 end

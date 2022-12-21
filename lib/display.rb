@@ -3,9 +3,11 @@
 require_relative 'constants'
 require_relative 'player'
 require_relative 'board'
+require './lib/vectors'
 Dir['./lib/pieces/*.rb'].sort.each { |file| require file }
 module Display
   include Constants
+  include Vectors
   def display_start_message
     display_horizontal_row
     puts "LET'S PLAY A GAME OF CHESS!"
@@ -34,7 +36,9 @@ module Display
     position = ''
     loop do
       position = gets.chomp
-      break if valid_coordinates(position)
+      if valid_coordinates?(position) && !empty_tile?(Board.parse_coordinates(position)) && own_piece?(Board.parse_coordinates(position))
+        break
+      end
 
       print 'Please enter a valid position: '
     end
@@ -42,12 +46,13 @@ module Display
     Board.parse_coordinates(position)
   end
 
-  def prompt_player_move_end
+  def prompt_player_move_end(start_position)
     print "#{@current_player.name}, enter the position you want to move the piece to: "
     position = ''
     loop do
       position = gets.chomp
-      break if valid_coordinates(position)
+      break if valid_coordinates?(position) && valid_move?(start_position,
+                                                           Board.parse_coordinates(position))
 
       print 'Please enter a valid position: '
     end
@@ -66,6 +71,21 @@ module Display
       puts
     end
     puts '  a b c d e f g h'
+    display_horizontal_row
+  end
+
+  def display_flipped_board
+    row_number = 1
+    @board.grid.each do |row|
+      print "#{row_number} "
+      row_number += 1
+      row.each do |piece|
+        print "#{piece_to_string(piece)} "
+      end
+      puts
+    end
+    puts '  a b c d e f g h'
+    display_horizontal_row
   end
 
   def piece_to_string(piece)
@@ -89,7 +109,21 @@ module Display
     end
   end
 
-  def valid_coordinates(coordinates)
-    coordinates.length == 2 && coordinates[0].match(/[a-h]/i) && coordinates[1].match(/[1-8]/)
+  def valid_coordinates?(coordinates)
+    (coordinates.length == 2) &&
+      coordinates[0].match(/[a-h]/i) &&
+      coordinates[1].match(/[1-8]/)
+  end
+
+  def empty_tile?(position)
+    @board.piece_at(position).nil?
+  end
+
+  def own_piece?(position)
+    @board.piece_at(position).color == @current_player.color
+  end
+
+  def valid_move?(start_position, end_position)
+    @board.piece_at(start_position).valid_move?(subtract(end_position, start_position))
   end
 end

@@ -1,14 +1,17 @@
 # frozen_string_literal: true
 
 require './lib/vectors'
+require './lib/helper'
 class Piece
   include Vectors
+  include Helper
   attr_reader :color, :position
 
   def initialize(color, position, board)
     @position = position
     @color = color
     @board = board
+    @moved = false
   end
 
   def move(move)
@@ -18,9 +21,7 @@ class Piece
     @board.set_piece_at(@position, self)
   end
 
-  def valid_move?(move)
-    !((@board.piece_at(add(move, @position)).color == @color) || piece_blocking_move?(move))
-  end
+  def valid_move?(move); end
 
   def valid_moves; end
 
