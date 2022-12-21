@@ -28,10 +28,18 @@ class Game
   def game_loop
     loop do
       display_board
-      p @board.move_piece(prompt_player_move_start, prompt_player_move_end)
+      @board.move_piece(prompt_player_move_start, prompt_player_move_end, @current_player)
       break if winner
 
       flip_current_player
+    end
+  end
+
+  def display_board_for_current_player
+    if @current_player == @player1
+      display_board
+    else
+      display_flipped_board
     end
   end
 

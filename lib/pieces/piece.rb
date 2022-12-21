@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require './lib/vectors'
 class Piece
   include Vectors
@@ -11,7 +12,10 @@ class Piece
   end
 
   def move(move)
-    @position = add(move, @position) if valid_move?(move)
+    @board.remove_piece(@position)
+    @position = add(move, @position)
+    puts "position: #{@position}"
+    @board.set_piece_at(@position, self)
   end
 
   def valid_move?(move)
