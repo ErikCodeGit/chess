@@ -11,31 +11,46 @@ class Pawn < Piece
   end
 
   def piece_blocking_move?(move)
-    @board.pieces_in_column(@position, add(@position, move)).all?(&:nil?)
+    pieces_along_move = @board.pieces_in_column(@position, add(@position, move))
+    return false if pieces_along_move.nil?
+
+    pieces_along_move.any? { |piece| !piece.nil? }
   end
 
   def can_take?(move)
     return false unless taking_pattern.include?(move)
 
-    @board.piece_at(add(@position, move)).color == opposite_color(@color)
+    piece_at_new_position = @board.piece_at(add(@position, move))
+    return false if piece_at_new_position.nil?
+
+    piece_at_new_position.color == opposite_color(@color)
   end
 
   def taking_pattern
     case @color
     when :white
-      [[-1, 1], [1, 1]]
+      [[1, -1], [1, 1]]
     when :black
-      [[-1, -1], [1, -1]]
+      [[-1, -1], [-1, 1]]
+    end
+  end
+
+  def movement_pattern
+    case @color
+    when :white
+      [[1, -1], [1, 0], [1, 1]]
+    when :black
+      [[-1, -1], [-1, 0], [-1, 1]]
     end
   end
 
   def normal_move?(move)
-    (@color == :white && move == [0, 1]) ||
-      (@color == :black && move == [0, -1])
+    (@color == :white && move == [1, 0]) ||
+      (@color == :black && move == [-1, 0])
   end
 
   def double_move?(move)
-    (!@moved && @color == :white && move == [0, 2]) ||
-      (!@moved && @color == :black && move == [0, -2])
+    (!@moved && @color == :white && move == [2, 0]) ||
+      (!@moved && @color == :black && move == [-2, 0])
   end
 end

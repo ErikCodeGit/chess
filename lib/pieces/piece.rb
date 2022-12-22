@@ -19,11 +19,14 @@ class Piece
     @position = add(move, @position)
     puts "position: #{@position}"
     @board.set_piece_at(@position, self)
+    @moved = true
   end
 
   def valid_move?(move); end
 
-  def valid_moves; end
+  def valid_moves
+    movement_pattern.select { |move| valid_move?(move) }
+  end
 
   def movement_pattern; end
 

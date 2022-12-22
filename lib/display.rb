@@ -36,9 +36,7 @@ module Display
     position = ''
     loop do
       position = gets.chomp
-      if valid_coordinates?(position) && !empty_tile?(Board.parse_coordinates(position)) && own_piece?(Board.parse_coordinates(position))
-        break
-      end
+      break if valid_start_input?(position)
 
       print 'Please enter a valid position: '
     end
@@ -48,16 +46,28 @@ module Display
 
   def prompt_player_move_end(start_position)
     print "#{@current_player.name}, enter the position you want to move the piece to: "
-    position = ''
+    end_position = ''
     loop do
-      position = gets.chomp
-      break if valid_coordinates?(position) && valid_move?(start_position,
-                                                           Board.parse_coordinates(position))
+      end_position = gets.chomp
+      break if valid_end_input?(start_position, end_position)
 
       print 'Please enter a valid position: '
     end
     display_horizontal_row
-    Board.parse_coordinates(position)
+    Board.parse_coordinates(end_position)
+  end
+
+  def valid_start_input?(start_position)
+    parsed_coordinates = Board.parse_coordinates(start_position)
+    valid_coordinates?(start_position) &&
+      !empty_tile?(parsed_coordinates) &&
+      own_piece?(parsed_coordinates) &&
+      piece_can_move?(parsed_coordinates)
+  end
+
+  def valid_end_input?(start_position, end_position)
+    valid_coordinates?(end_position) &&
+      valid_move?(start_position, Board.parse_coordinates(end_position))
   end
 
   def display_board
@@ -124,6 +134,11 @@ module Display
   end
 
   def valid_move?(start_position, end_position)
-    @board.piece_at(start_position).valid_move?(subtract(end_position, start_position))
+    piece = @board.piece_at(start_position)
+    piece.valid_move?(subtract(end_position, start_position))
+  end
+
+  def piece_can_move?(start_position)
+    !@board.piece_at(start_position).valid_moves.empty?
   end
 end

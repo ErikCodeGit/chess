@@ -1,4 +1,6 @@
 # chess
+# Note to self: coordinates are as follows:
+[y , x]
 
 ## TODO
 + move movement validation to piece files somehow?

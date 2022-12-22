@@ -28,7 +28,7 @@ describe Board do
   subject(:board) { described_class.new }
   describe '#move_piece' do
     context 'when moving a pawn from a2 to a3' do
-      it 'moves the pawn to a3' do
+      xit 'moves the pawn to a3' do
         a2_parsed = board_class.parse_coordinates('a2')
         a3_parsed = board_class.parse_coordinates('a3')
         board.move_piece(a2_parsed, a3_parsed)
@@ -37,11 +37,24 @@ describe Board do
     end
 
     context 'when moving a pawn from a7 to a6' do
-      it 'moves the pawn to a6' do
+      xit 'moves the pawn to a6' do
         a6_parsed = board_class.parse_coordinates('a6')
         a7_parsed = board_class.parse_coordinates('a7')
         board.move_piece(a7_parsed, a6_parsed)
         expect(board.piece_at(a6_parsed)).to be_kind_of(Pawn)
+      end
+    end
+  end
+
+  describe '#pieces_in_column' do
+    subject(:board) { described_class.new }
+    context 'when two black pawns are ahead of a white pawn' do
+      before do
+        board.set_piece_at([2, 0], Pawn.new(:black, [2, 0], board))
+        board.set_piece_at([3, 0], Pawn.new(:black, [3, 0], board))
+      end
+      it 'return an array with two black pawns' do
+        expect(board.pieces_in_column([1, 0], [3, 0]).count { |piece| piece.is_a?(Pawn) }).to eq(2)
       end
     end
   end

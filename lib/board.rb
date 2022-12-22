@@ -68,27 +68,28 @@ class Board
   end
 
   def pieces_in_column(start_position, end_position)
-    return unless start_position[0] == end_position[0]
-
-    increment = start_position[1] <= end_position[1] ? 1 : -1
-    result = []
-    current_position = start_position.dup
-    until current_position == end_position
-      result << piece_at(current_position)
-      current_position[1] += increment
-    end
-    result
-  end
-
-  def pieces_in_row(start_position, end_position)
     return unless start_position[1] == end_position[1]
 
     increment = start_position[0] <= end_position[0] ? 1 : -1
     result = []
     current_position = start_position.dup
     until current_position == end_position
-      result << piece_at(current_position)
       current_position[0] += increment
+      result << piece_at(current_position)
+    end
+    result
+  end
+
+  def pieces_in_row(start_position, end_position)
+    return unless start_position[0] == end_position[0]
+
+    increment = start_position[1] <= end_position[1] ? 1 : -1
+    result = []
+    current_position = start_position.dup
+    current_position[1] += increment
+    until current_position == end_position
+      result << piece_at(current_position)
+      current_position[1] += increment
     end
     result
   end
@@ -104,6 +105,7 @@ class Board
     until current_position == end_position
       result << piece_at(current_position)
       current_position[0] += increment
+      current_position[1] += increment
     end
     result
   end
