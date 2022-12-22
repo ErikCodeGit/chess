@@ -36,7 +36,7 @@ class Board
 
   def move_piece(start_position, end_position, current_player)
     piece = @grid[start_position[0]][start_position[1]]
-    return NOT_YOUR_PIECE_ERROR unless piece.color == current_player.color
+    return unless piece.color == current_player.color
 
     puts "position before move: #{piece.position}"
     print 'move: '
