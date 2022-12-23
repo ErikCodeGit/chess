@@ -26,6 +26,15 @@ class Pawn < Piece
     piece_at_new_position.color == opposite_color(@color)
   end
 
+  def attacked_squares
+    result = []
+    taking_pattern.each do |move|
+      attacked_position = add(@position, move)
+      result << attacked_position if attacked_position[0].between?(0, 7) && attacked_position[1].between?(0, 7)
+    end
+    result
+  end
+
   def taking_pattern
     case @color
     when :white
@@ -38,9 +47,17 @@ class Pawn < Piece
   def movement_pattern
     case @color
     when :white
-      [[1, -1], [1, 0], [1, 1]]
+      if @moved
+        [[1, -1], [1, 0], [1, 1]]
+      else
+        [[1, -1], [1, 0], [1, 1], [2, 0]]
+      end
     when :black
-      [[-1, -1], [-1, 0], [-1, 1]]
+      if @moved
+        [[-1, -1], [-1, 0], [-1, 1]]
+      else
+        [[-1, -1], [-1, 0], [-1, 1], [-2, 0]]
+      end
     end
   end
 

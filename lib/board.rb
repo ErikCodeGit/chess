@@ -55,6 +55,10 @@ class Board
     [coordinates[1].to_i - 1, coordinates[0].downcase.codepoints[0] - 97]
   end
 
+  def self.unparse_coordinates(coordinates)
+    "#{(coordinates[1] + 97).chr}#{coordinates[0] + 1}"
+  end
+
   def piece_at(position)
     @grid[position[0]][position[1]]
   end
@@ -67,7 +71,7 @@ class Board
     result
   end
 
-  def pieces_in_column(start_position, end_position)
+  def pieces_in_column(start_position, end_position = start_position)
     return unless start_position[1] == end_position[1]
 
     increment = start_position[0] <= end_position[0] ? 1 : -1
@@ -80,32 +84,92 @@ class Board
     result
   end
 
-  def pieces_in_row(start_position, end_position)
+  def all_pieces_in_column(column_index)
+    return unless column_index.between?(0, 7)
+
+    result = []
+    8.times do |index|
+      result << piece_at([index, column_index])
+    end
+    result
+  end
+
+  def pieces_in_row(start_position, end_position = start_position)
     return unless start_position[0] == end_position[0]
 
     increment = start_position[1] <= end_position[1] ? 1 : -1
     result = []
     current_position = start_position.dup
-    current_position[1] += increment
     until current_position == end_position
-      result << piece_at(current_position)
       current_position[1] += increment
+      result << piece_at(current_position)
     end
     result
   end
 
-  def pieces_in_diagonal(start_position, end_position)
-    # x and y of two points along a diagonal are always equal
-    difference = subtract(end_position, start_position)
-    return unless difference[0] == difference[1]
+  def all_pieces_in_row(row_index)
+    return unless row_index.between?(0, 7)
 
-    increment = start_position[0] <= end_position[0] ? 1 : -1
+    result = []
+    8.times do |index|
+      result << piece_at([row_index, index])
+    end
+    result
+  end
+
+  def pieces_in_ascending_diagonal(start_position, end_position = start_position)
+    # differnce of x and y of two points along a diagonal are always equal
+    difference = subtract(end_position, start_position)
+    return unless difference[0].eql?(difference[1])
+
     result = []
     current_position = start_position.dup
     until current_position == end_position
+      current_position[0] += 1
+      current_position[1] += 1
       result << piece_at(current_position)
-      current_position[0] += increment
-      current_position[1] += increment
+    end
+    result
+  end
+
+  def generate_column_moves(start_position)
+    result = []
+    current_position = [0, start_position[1]]
+    while current_position[0] < 8
+      result << subtract(current_position, start_position)
+      current_position[0] += 1
+    end
+    result
+  end
+
+  def generate_row_moves(start_position)
+    result = []
+    current_position = [start_position[0], 0]
+    while current_position[1] < 8
+      result << subtract(current_position, start_position)
+      current_position[1] += 1
+    end
+    result
+  end
+
+  def generate_ascending_diagonal_moves(start_position)
+    result = []
+    current_position = subtract_until_at_edge(start_position.dup, [1, 1])
+    while current_position[0] < 8 && current_position[1] < 8
+      result << subtract(current_position, start_position)
+      current_position[0] += 1
+      current_position[1] += 1
+    end
+    result
+  end
+
+  def generate_descending_diagonal_moves(start_position)
+    result = []
+    current_position = subtract_until_at_edge(start_position.dup, [-1, 1])
+    while current_position[0].between?(0, 7) && current_position[1].between?(0, 7)
+      result << subtract(current_position, start_position)
+      current_position[0] -= 1
+      current_position[1] += 1
     end
     result
   end

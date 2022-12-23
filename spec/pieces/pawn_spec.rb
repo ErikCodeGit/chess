@@ -145,8 +145,8 @@ describe Pawn do
         before do
           board.set_piece_at([2, 1], black_pawn)
         end
-        it 'returns true' do
-          expect(black_pawn.valid_move?([-1, 0])).to be(true)
+        it 'returns false' do
+          expect(black_pawn.valid_move?([-1, 0])).to be(false)
         end
       end
     end
@@ -157,8 +157,8 @@ describe Pawn do
     subject(:white_pawn) { board.piece_at([1, 0]) }
     subject(:black_pawn) { described_class.new(:black, [2, 0], board) }
     context 'when there is a black pawn in front of a white pawn and white pawn tries to move 1 up' do
-      it 'returns true' do
-        expect(white_pawn.piece_blocking_move?([1, 0])).to be(true)
+      it 'returns false' do
+        expect(white_pawn.piece_blocking_move?([1, 0])).to be(false)
       end
     end
     context 'when there is a black pawn in front of a white pawn and black pawn tries to move 1 down' do

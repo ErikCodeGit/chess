@@ -45,13 +45,17 @@ module Display
   end
 
   def prompt_player_move_end(start_position)
+    piece = @board.piece_at(start_position)
+    valid_moves = piece.valid_moves.map do |move|
+      Board.unparse_coordinates(add(move, piece.position))
+    end
     print "#{@current_player.name}, enter the position you want to move the piece to: "
     end_position = ''
     loop do
       end_position = gets.chomp
       break if valid_end_input?(start_position, end_position)
 
-      print 'Please enter a valid position: '
+      print "Please enter a valid position (#{valid_moves.join(', ')}): "
     end
     display_horizontal_row
     Board.parse_coordinates(end_position)

@@ -62,4 +62,114 @@ describe Board do
       end
     end
   end
+
+  describe '#generate_row_moves' do
+    subject(:board) { described_class.new }
+    context 'when generating the row with [0, 0]' do
+      it 'returns the normal coordinates in row' do
+        normal_row = [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]]
+        expect(board.generate_row_moves([0, 0])).to eq(normal_row)
+      end
+    end
+
+    context 'when generating the row with [1, 1]' do
+      it 'returns the right moves' do
+        shifted_row = [[0, -1], [0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6]]
+        expect(board.generate_row_moves([1, 1])).to eq(shifted_row)
+      end
+    end
+  end
+
+  describe '#generate_column_moves' do
+    subject(:board) { described_class.new }
+    context 'when generating the column with [0, 0]' do
+      it 'returns the normal coordinates in row' do
+        normal_column = [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0]]
+        expect(board.generate_column_moves([0, 0])).to eq(normal_column)
+      end
+    end
+
+    context 'when generating the column with [1, 1]' do
+      it 'returns the right moves' do
+        shifted_column = [[-1, 0], [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0]]
+        expect(board.generate_column_moves([1, 1])).to eq(shifted_column)
+      end
+    end
+  end
+
+  describe '#generate_ascending_diagonal_moves' do
+    subject(:board) { described_class.new }
+    context 'when generating the diagonal with [0, 0]' do
+      it 'returns the normal coordinates in diagonal' do
+        normal_diagonal = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7]]
+        expect(board.generate_ascending_diagonal_moves([0, 0])).to match_array(normal_diagonal)
+      end
+    end
+
+    context 'when generating the column with [1, 1]' do
+      it 'returns the right moves' do
+        shifted_diagonal = [[-1, -1], [0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6]]
+        expect(board.generate_ascending_diagonal_moves([1, 1])).to match_array(shifted_diagonal)
+      end
+    end
+
+    context 'when generating the column with [1, 0]' do
+      it 'returns the right moves' do
+        shifted_diagonal = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6]]
+        expect(board.generate_ascending_diagonal_moves([1, 0])).to match_array(shifted_diagonal)
+      end
+    end
+
+    context 'when generating the column with [3, 6]' do
+      it 'returns the right moves' do
+        shifted_diagonal = [[-3, -3], [-2, -2], [-1, -1], [0, 0], [1, 1]]
+        expect(board.generate_ascending_diagonal_moves([3, 6])).to match_array(shifted_diagonal)
+      end
+    end
+
+    context 'when generating the column with [6, 3]' do
+      it 'returns the right moves' do
+        shifted_diagonal = [[-3, -3], [-2, -2], [-1, -1], [0, 0], [1, 1]]
+        expect(board.generate_ascending_diagonal_moves([6, 3])).to match_array(shifted_diagonal)
+      end
+    end
+  end
+
+  describe '#generate_descending_diagonal_moves' do
+    subject(:board) { described_class.new }
+    context 'when generating the diagonal with [7, 0]' do
+      it 'returns the normal coordinates in diagonal' do
+        normal_diagonal = [[0, 0], [-1, 1], [-2, 2], [-3, 3], [-4, 4], [-5, 5], [-6, 6], [-7, 7]]
+        expect(board.generate_descending_diagonal_moves([7, 0])).to match_array(normal_diagonal)
+      end
+    end
+
+    context 'when generating the column with [1, 1]' do
+      it 'returns the right moves' do
+        shifted_diagonal = [[1, -1], [0, 0], [-1, 1]]
+        expect(board.generate_descending_diagonal_moves([1, 1])).to match_array(shifted_diagonal)
+      end
+    end
+
+    context 'when generating the column with [1, 0]' do
+      it 'returns the right moves' do
+        shifted_diagonal = [[0, 0], [-1, 1]]
+        expect(board.generate_descending_diagonal_moves([1, 0])).to match_array(shifted_diagonal)
+      end
+    end
+
+    context 'when generating the column with [3, 6]' do
+      it 'returns the right moves' do
+        shifted_diagonal = [[4, -4], [3, -3], [2, -2], [1, -1], [0, 0], [-1, 1]]
+        expect(board.generate_descending_diagonal_moves([3, 6])).to match_array(shifted_diagonal)
+      end
+    end
+
+    context 'when generating the column with [6, 3]' do
+      it 'returns the right moves' do
+        shifted_diagonal = [[1, -1], [0, 0], [-1, 1], [-2, 2], [-3, 3], [-4, 4]]
+        expect(board.generate_descending_diagonal_moves([6, 3])).to match_array(shifted_diagonal)
+      end
+    end
+  end
 end
