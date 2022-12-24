@@ -92,9 +92,8 @@ class Piece
   end
 
   def all_visible_squares_in_column
-    visible_squares = visible_squares_in_column
     result = []
-    visible_squares.each do |position|
+    visible_squares_in_column.each do |position|
       result << @board.positions_in_column(@position, position)
     end
     result.compact.uniq.flatten(1)
@@ -137,7 +136,7 @@ class Piece
   end
 
   def previous_piece_in_array(pieces, reference_point)
-    previous_piece = pieces.first
+    previous_piece = nil
     pieces.compact.each do |piece|
       position = piece.position
       break if position[0] >= reference_point[0] && position[1] >= reference_point[1]

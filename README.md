@@ -3,7 +3,6 @@
 [y , x]
 
 ## TODO
-+ fix king suiciding (test.rb)
 + promotion
 + resign, draw offer
 + tile background
