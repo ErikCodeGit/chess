@@ -41,6 +41,6 @@ class Rook < Piece
     end
     return false if piece_at_new_position.nil? || visible_pieces.nil? || visible_pieces.empty?
 
-    visible_pieces.include?(piece_at_new_position) && piece_at_new_position.color == @color
+    visible_pieces.include?(new_position) && piece_at_new_position.color == opposite_color(@color)
   end
 end

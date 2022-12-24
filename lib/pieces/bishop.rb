@@ -8,15 +8,9 @@ class Bishop < Piece
       can_take?(move)))
   end
 
-  # [1, -1]
-  # [ -1, 1]
-  # [1, 1]
-  # [-1, -1]
   def piece_blocking_move?(move)
-    # if same sign
     if move[0] == move[1]
       pieces_along_move = @board.pieces_in_ascending_diagonal(@position, add(@position, move))
-      # if different signs
     elsif move[0] == -move[1]
       pieces_along_move = @board.pieces_in_descending_diagonal(@position, add(@position, move))
     end
