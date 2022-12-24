@@ -1,0 +1,1 @@
+puts move_array_to_s(bishop.valid_moves, bishop)

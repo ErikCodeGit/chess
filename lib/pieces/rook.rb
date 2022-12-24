@@ -27,21 +27,20 @@ class Rook < Piece
 
   def attacked_squares
     (valid_moves.map do |move|
-       add(@position, move)
-     end + visible_pieces_in_column + visible_pieces_in_row).uniq
+      add(@position, move)
+    end + visible_pieces_in_column + visible_pieces_in_row).uniq
   end
 
   def can_take?(move)
     new_position = add(@position, move)
+    piece_at_new_position = @board.piece_at(new_position)
     if move[0].zero?
-      pieces_along_move = @board.pieces_in_row(@position, new_position)
+      visible_pieces = visible_pieces_in_row
     elsif move[1].zero?
-      pieces_along_move = @board.pieces_in_column(@position, new_position)
+      visible_pieces = visible_pieces_in_column
     end
-    return false if pieces_along_move.nil? || pieces_along_move.empty?
+    return false if piece_at_new_position.nil? || visible_pieces.nil? || visible_pieces.empty?
 
-    first_piece_in_array(pieces_along_move).color == opposite_color(@color) &&
-      pieces_along_move.compact.length == 1 &&
-      pieces_along_move.compact[0].position == new_position
+    visible_pieces.include?(piece_at_new_position) && piece_at_new_position.color == @color
   end
 end

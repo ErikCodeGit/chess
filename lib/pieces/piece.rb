@@ -57,6 +57,20 @@ class Piece
     [piece_left, piece_right].compact.map(&:position)
   end
 
+  def visible_pieces_in_ascending_diagonal
+    all_pieces = @board.all_pieces_in_ascending_diagonal(@position)
+    piece_before = previous_piece_in_array(all_pieces, @position)
+    piece_after = next_piece_in_array(all_pieces, @position)
+    [piece_before, piece_after].compact.map(&:position)
+  end
+
+  def visible_pieces_in_descending_diagonal
+    all_pieces = @board.all_pieces_in_descending_diagonal(@position)
+    piece_before = previous_piece_in_array(all_pieces, @position)
+    piece_after = next_piece_in_array(all_pieces, @position)
+    [piece_before, piece_after].compact.map(&:position)
+  end
+
   def next_piece_in_array(pieces, reference_point)
     next_piece = nil
     pieces.compact.each do |piece|

@@ -123,6 +123,12 @@ module Display
     end
   end
 
+  def move_array_to_s(moves, piece)
+    (moves.map do |move|
+      Board.unparse_coordinates(add(piece.position, move))
+    end).join(', ')
+  end
+
   def valid_coordinates?(coordinates)
     (coordinates.length == 2) &&
       coordinates[0].match(/[a-h]/i) &&

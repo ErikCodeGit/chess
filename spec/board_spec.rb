@@ -63,6 +63,44 @@ describe Board do
     end
   end
 
+  describe '#pieces_in_ascending_diagonal' do
+    subject(:board) { described_class.new }
+    context 'on a start board' do
+      context 'when calling from c1 to f4' do
+        it 'returns an array with a white pawn and bishop' do
+          correct_array = [board.piece_at([0, 2]), board.piece_at([1, 3])]
+          expect(board.pieces_in_ascending_diagonal([0, 2], [3, 5]).compact).to match_array(correct_array)
+        end
+      end
+
+      context 'when calling from a1 to h8' do
+        it 'returns an array with a white rook, pawn, black pawn, rook' do
+          correct_array = [board.piece_at([0, 0]), board.piece_at([1, 1]), board.piece_at([6, 6]), board.piece_at([7, 7])]
+          expect(board.pieces_in_ascending_diagonal([0, 0], [7, 7]).compact).to match_array(correct_array)
+        end
+      end
+    end
+  end
+
+  describe '#pieces_in_descending_diagonal' do
+    subject(:board) { described_class.new }
+    context 'on a start board' do
+      context 'when calling from c8 to e6' do
+        it 'returns an array with a black pawn and bishop' do
+          correct_array = [board.piece_at([7, 2]), board.piece_at([6, 3])]
+          expect(board.pieces_in_descending_diagonal([7, 2], [5, 4]).compact).to match_array(correct_array)
+        end
+      end
+
+      context 'when calling from a8 to h1' do
+        it 'returns an array with a black rook, pawn, white pawn, rook' do
+          correct_array = [board.piece_at([7, 0]), board.piece_at([6, 1]), board.piece_at([1, 6]), board.piece_at([0, 7])]
+          expect(board.pieces_in_descending_diagonal([7, 0], [0, 7]).compact).to match_array(correct_array)
+        end
+      end
+    end
+  end
+
   describe '#generate_row_moves' do
     subject(:board) { described_class.new }
     context 'when generating the row with [0, 0]' do
