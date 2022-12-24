@@ -13,8 +13,9 @@ class Game
     @player2 = Player.new(:black, 2)
     @current_player = @player1
     @board = Board.new
-    @player1.king = @board.grid[0][4]
-    @player2.king = @board.grid[7][4]
+    @board.set_up_board
+    @player1.king = @board.white_king
+    @player2.king = @board.black_king
     start_game
   end
 
@@ -22,16 +23,20 @@ class Game
     display_start_message
     create_player_names
     game_loop
-    display_winner_message
+    display_board
+    display_winner_message if winner
+    display_draw_message if draw
   end
 
   def game_loop
     loop do
       display_board
+      handle_checks
       start_position = prompt_player_move_start
       end_position = prompt_player_move_end(start_position)
       @board.move_piece(start_position, end_position, @current_player)
       break if winner
+      break if draw
 
       flip_current_player
     end
@@ -46,8 +51,12 @@ class Game
   end
 
   def winner
-    @player1 if @player1.in_checkmate?
-    @player2 if @player2.in_checkmate?
+    @player1 if @board.player_in_checkmate?(@player1)
+    @player2 if @board.player_in_checkmate?(@player2)
+  end
+
+  def draw
+    @board.stalemate?(@current_player)
   end
 
   def flip_current_player
@@ -61,5 +70,9 @@ class Game
   def create_player_names
     @player1.name = prompt_player_name(@player1)
     @player2.name = prompt_player_name(@player2)
+  end
+
+  def handle_checks
+    display_check if @board.white_king_in_check? || @board.black_king_in_check?
   end
 end

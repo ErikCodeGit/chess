@@ -8,9 +8,10 @@ class Player
     @color = color
     @id =  id
     @name = name
+    @king = nil
   end
 
   def in_checkmate?
-    @king.in_check? && @king.valid_moves.empty?
+    king.valid_moves.empty? && @king.in_check?
   end
 end

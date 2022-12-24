@@ -11,3 +11,5 @@ bishop = @board.piece_at([2, 2])
 display_board
 puts move_array_to_s(bishop.movement_pattern, bishop)
 puts move_array_to_s(bishop.valid_moves, bishop)
+
+p [nil, nil, nil].compact

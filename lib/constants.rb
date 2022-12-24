@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Constants
-  HORIZONTAL_ROW_WIDTH = 50
+  HORIZONTAL_ROW_WIDTH = 75
   HORIZONTAL_ROW_CHARACTER = '🭹'
   PAWN_SYMBOL = { white: '♟︎', black: '♙' }.freeze
   KNIGHT_SYMBOL = { white: '♞', black: '♘' }.freeze

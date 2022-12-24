@@ -6,6 +6,7 @@ class Piece
   include Vectors
   include Helper
   attr_reader :color, :position
+  attr_accessor :board
 
   def initialize(color, position, board)
     @position = position
@@ -17,7 +18,6 @@ class Piece
   def move(move)
     @board.remove_piece(@position)
     @position = add(move, @position)
-    puts "position: #{@position}"
     @board.set_piece_at(@position, self)
     @moved = true
   end
@@ -42,33 +42,85 @@ class Piece
     array.find { |piece| !piece.nil? }
   end
 
+  def expose_king_to_mate?(move)
+    board_copy = @board.deep_copy
+    board_copy.move_piece(@position, add(@position, move), nil, @color)
+    case @color
+    when :white
+      board_copy.white_king_in_check?
+    when :black
+      board_copy.black_king_in_check?
+    end
+  end
+
+  def king_in_check?
+    case @color
+    when :white
+      @board.white_king_in_check?
+    when :black
+      @board.black_king_in_check?
+    end
+  end
+
   # visible means direct line of sight
-  def visible_pieces_in_column
+  def visible_squares_in_column
     all_pieces = @board.all_pieces_in_column(@position[1])
     piece_below = previous_piece_in_array(all_pieces, @position)
     piece_above = next_piece_in_array(all_pieces, @position)
     [piece_below, piece_above].compact.map(&:position)
   end
 
-  def visible_pieces_in_row
+  def visible_squares_in_row
     all_pieces = @board.all_pieces_in_row(@position[0])
     piece_left = previous_piece_in_array(all_pieces, @position)
     piece_right = next_piece_in_array(all_pieces, @position)
     [piece_left, piece_right].compact.map(&:position)
   end
 
-  def visible_pieces_in_ascending_diagonal
+  def visible_squares_in_ascending_diagonal
     all_pieces = @board.all_pieces_in_ascending_diagonal(@position)
     piece_before = previous_piece_in_array(all_pieces, @position)
     piece_after = next_piece_in_array(all_pieces, @position)
     [piece_before, piece_after].compact.map(&:position)
   end
 
-  def visible_pieces_in_descending_diagonal
+  def visible_squares_in_descending_diagonal
     all_pieces = @board.all_pieces_in_descending_diagonal(@position)
     piece_before = previous_piece_in_array(all_pieces, @position)
     piece_after = next_piece_in_array(all_pieces, @position)
     [piece_before, piece_after].compact.map(&:position)
+  end
+
+  def all_visible_squares_in_column
+    result = []
+    visible_squares_in_column.each do |position|
+      result << @board.positions_in_column(@position, position)
+    end
+    result.compact.uniq.flatten(1)
+  end
+
+  def all_visible_squares_in_row
+    result = []
+    visible_squares_in_column.each do |position|
+      result << @board.positions_in_row(@position, position)
+    end
+    result.compact.uniq.flatten(1)
+  end
+
+  def all_visible_squares_in_ascending_diagonal
+    result = []
+    visible_squares_in_ascending_diagonal.each do |position|
+      result << @board.positions_in_ascending_diagonal(@position, position)
+    end
+    result.compact.uniq.flatten(1)
+  end
+
+  def all_visible_squares_in_descending_diagonal
+    result = []
+    visible_squares_in_descending_diagonal.each do |position|
+      result << @board.positions_in_descending_diagonal(@position, position)
+    end
+    result.compact.uniq.flatten(1)
   end
 
   def next_piece_in_array(pieces, reference_point)

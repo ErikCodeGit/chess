@@ -4,6 +4,7 @@ require './lib/pieces/piece'
 class Queen < Piece
   def valid_move?(move)
     return false if move_out_of_bounds?(move)
+    return false if expose_king_to_mate?(move)
 
     (movement_pattern.include?(move) &&
       (!piece_blocking_move?(move) ||
@@ -35,23 +36,26 @@ class Queen < Piece
   end
 
   def attacked_squares
-    (valid_moves.map do |move|
-      add(@position, move)
-    end + visible_pieces_in_column + visible_pieces_in_row +
-     visible_pieces_in_ascending_diagonal + visible_pieces_in_descending_diagonal).uniq
+    all_visible_squares
+  end
+
+  def all_visible_squares
+    result = all_visible_squares_in_column | all_visible_squares_in_row |
+             all_visible_squares_in_ascending_diagonal | all_visible_squares_in_descending_diagonal
+    result.delete_if { |square| square == @position }
   end
 
   def can_take?(move)
     new_position = add(@position, move)
     piece_at_new_position = @board.piece_at(new_position)
     if move[0].zero?
-      visible_pieces = visible_pieces_in_row
+      visible_pieces = visible_squares_in_row
     elsif move[1].zero?
-      visible_pieces = visible_pieces_in_column
+      visible_pieces = visible_squares_in_column
     elsif move[0] == move[1]
-      visible_pieces = visible_pieces_in_ascending_diagonal
+      visible_pieces = visible_squares_in_ascending_diagonal
     elsif move[0] == -move[1]
-      visible_pieces = visible_pieces_in_descending_diagonal
+      visible_pieces = visible_squares_in_descending_diagonal
     end
     return false if piece_at_new_position.nil? || visible_pieces.nil? || visible_pieces.empty?
 

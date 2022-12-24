@@ -4,6 +4,7 @@ require_relative 'constants'
 require_relative 'player'
 require_relative 'board'
 require './lib/vectors'
+require 'colorize'
 Dir['./lib/pieces/*.rb'].sort.each { |file| require file }
 module Display
   include Constants
@@ -62,9 +63,10 @@ module Display
   end
 
   def valid_start_input?(start_position)
+    return false unless valid_coordinates?(start_position)
+
     parsed_coordinates = Board.parse_coordinates(start_position)
-    valid_coordinates?(start_position) &&
-      !empty_tile?(parsed_coordinates) &&
+    !empty_tile?(parsed_coordinates) &&
       own_piece?(parsed_coordinates) &&
       piece_can_move?(parsed_coordinates)
   end
@@ -100,6 +102,28 @@ module Display
     end
     puts '  a b c d e f g h'
     display_horizontal_row
+  end
+
+  def display_winner_message
+    puts 'Checkmate!'.red
+    display_horizontal_row
+    puts "#{winner.name} wins!".green
+    display_horizontal_row
+  end
+
+  def display_draw_message
+    puts "It's a draw!".blue
+  end
+
+  def display_check
+    person_in_check = @player1 if @player1.king.in_check?
+    person_in_check = @player2 if @player2.king.in_check?
+    puts "#{person_in_check.name} is in check!".yellow
+    display_horizontal_row
+  end
+
+  def display_check_mate(player_in_mate)
+    puts "#{player_in_mate.name} is in checkmate".red
   end
 
   def piece_to_string(piece)

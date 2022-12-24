@@ -4,6 +4,7 @@ require './lib/pieces/piece'
 class Pawn < Piece
   def valid_move?(move)
     return false if move_out_of_bounds?(move)
+    return false if expose_king_to_mate?(move)
 
     if taking_pattern.include?(move)
       can_take?(move)
@@ -29,10 +30,15 @@ class Pawn < Piece
   end
 
   def attacked_squares
+    all_visible_squares
+  end
+
+  def all_visible_squares
     result = []
     taking_pattern.each do |move|
-      attacked_position = add(@position, move)
-      result << attacked_position if attacked_position[0].between?(0, 7) && attacked_position[1].between?(0, 7)
+      next if move_out_of_bounds?(move)
+
+      result << add(@position, move)
     end
     result
   end
