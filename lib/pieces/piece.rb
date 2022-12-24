@@ -93,4 +93,9 @@ class Piece
     end
     previous_piece
   end
+
+  def move_out_of_bounds?(move)
+    position_after_move = add(@position, move)
+    !position_after_move[0].between?(0, 7) || !position_after_move[1].between?(0, 7)
+  end
 end

@@ -3,6 +3,8 @@
 require './lib/pieces/piece'
 class Pawn < Piece
   def valid_move?(move)
+    return false if move_out_of_bounds?(move)
+
     if taking_pattern.include?(move)
       can_take?(move)
     else

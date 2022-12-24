@@ -3,6 +3,8 @@
 require './lib/pieces/piece'
 class Rook < Piece
   def valid_move?(move)
+    return false if move_out_of_bounds?(move)
+
     (movement_pattern.include?(move) &&
       (!piece_blocking_move?(move) ||
       can_take?(move)))

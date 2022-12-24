@@ -75,7 +75,8 @@ describe Board do
 
       context 'when calling from a1 to h8' do
         it 'returns an array with a white rook, pawn, black pawn, rook' do
-          correct_array = [board.piece_at([0, 0]), board.piece_at([1, 1]), board.piece_at([6, 6]), board.piece_at([7, 7])]
+          correct_array = [board.piece_at([0, 0]), board.piece_at([1, 1]), board.piece_at([6, 6]),
+                           board.piece_at([7, 7])]
           expect(board.pieces_in_ascending_diagonal([0, 0], [7, 7]).compact).to match_array(correct_array)
         end
       end
@@ -94,7 +95,8 @@ describe Board do
 
       context 'when calling from a8 to h1' do
         it 'returns an array with a black rook, pawn, white pawn, rook' do
-          correct_array = [board.piece_at([7, 0]), board.piece_at([6, 1]), board.piece_at([1, 6]), board.piece_at([0, 7])]
+          correct_array = [board.piece_at([7, 0]), board.piece_at([6, 1]), board.piece_at([1, 6]),
+                           board.piece_at([0, 7])]
           expect(board.pieces_in_descending_diagonal([7, 0], [0, 7]).compact).to match_array(correct_array)
         end
       end
