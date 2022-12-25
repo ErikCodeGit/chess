@@ -3,6 +3,5 @@
 [y , x]
 
 ## TODO
-+ resign, draw offer
 + tile background
 + (piece highlighting?)

@@ -107,11 +107,11 @@ module Display
 
   def display_board
     row_number = 8
-    @board.grid.reverse.each do |row|
+    @board.grid.reverse.each_with_index do |row, index_y|
       print "#{row_number} "
       row_number -= 1
-      row.each do |piece|
-        print "#{piece_to_string(piece)} "
+      row.each_with_index do |piece, index_x|
+        print "#{piece_to_string(piece, [index_y, index_x])} "
       end
       puts
     end
@@ -171,8 +171,11 @@ module Display
     response[0].downcase
   end
 
-  def piece_to_string(piece)
-    return EMPTY_SYMBOL if piece.nil?
+  def piece_to_string(piece, position)
+    flip = ((position[0] % 2) + position[1]).odd?
+    if piece.nil?
+      return flip ? EMPTY_SYMBOL_DARK : EMPTY_SYMBOL_LIGHT
+    end
 
     color = piece.color
     if piece.instance_of?(Pawn)

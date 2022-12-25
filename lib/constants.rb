@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'colorize'
 
 module Constants
   HORIZONTAL_ROW_WIDTH = 75
@@ -9,5 +10,6 @@ module Constants
   ROOK_SYMBOL = { white: '♜', black: '♖' }.freeze
   QUEEN_SYMBOL = { white: '♛', black: '♕' }.freeze
   KING_SYMBOL = { white: '♚', black: '♔' }.freeze
-  EMPTY_SYMBOL = '■'
+  EMPTY_SYMBOL_LIGHT = '■'
+  EMPTY_SYMBOL_DARK = '■'.green
 end
