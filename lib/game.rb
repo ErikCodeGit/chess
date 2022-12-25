@@ -52,8 +52,8 @@ class Game
   end
 
   def winner
-    @player1 if @board.player_in_checkmate?(@player1)
-    @player2 if @board.player_in_checkmate?(@player2)
+    @player1 if @board.player_in_checkmate?(@player2)
+    @player2 if @board.player_in_checkmate?(@player1)
   end
 
   def draw
