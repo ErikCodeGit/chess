@@ -93,11 +93,11 @@ class Board
   def positions_in_column(start_position, end_position)
     return unless start_position[1] == end_position[1]
 
-    increment = start_position[0] <= end_position[0] ? 1 : -1
+    increment = start_position[0] <= end_position[0] ? [1, 0] : [-1, 0]
     result = []
     current_position = start_position.dup
     until current_position == end_position
-      current_position[0] += increment
+      current_position = add(current_position, increment)
       result << current_position
     end
     result
@@ -106,11 +106,11 @@ class Board
   def positions_in_row(start_position, end_position)
     return unless start_position[0] == end_position[0]
 
-    increment = start_position[1] <= end_position[1] ? 1 : -1
+    increment = start_position[1] <= end_position[1] ? [0, 1] : [0, -1]
     result = []
     current_position = start_position.dup
     until current_position == end_position
-      current_position[1] += increment
+      current_position = add(current_position, increment)
       result << current_position
     end
     result
@@ -237,6 +237,46 @@ class Board
     current_position = subtract_until_at_edge(start_position.dup, [-1, 1])
     while current_position[0].between?(0, 7) && current_position[1].between?(0, 7)
       result << piece_at(current_position)
+      current_position = add(current_position, [-1, 1])
+    end
+    result
+  end
+
+  def all_positions_in_column(column_index)
+    return unless column_index.between?(0, 7)
+
+    result = []
+    8.times do |index|
+      result << [index, column_index]
+    end
+    result
+  end
+
+  def all_positions_in_row(row_index)
+    return unless row_index.between?(0, 7)
+
+    result = []
+    8.times do |index|
+      result << [row_index, index]
+    end
+    result
+  end
+
+  def all_positions_in_ascending_diagonal(start_position)
+    result = []
+    current_position = subtract_until_at_edge(start_position.dup, [1, 1])
+    while current_position[0].between?(0, 7) && current_position[1].between?(0, 7)
+      result << current_position
+      current_position = add(current_position, [1, 1])
+    end
+    result
+  end
+
+  def all_positions_in_descending_diagonal(start_position)
+    result = []
+    current_position = subtract_until_at_edge(start_position.dup, [-1, 1])
+    while current_position[0].between?(0, 7) && current_position[1].between?(0, 7)
+      result << current_position
       current_position = add(current_position, [-1, 1])
     end
     result

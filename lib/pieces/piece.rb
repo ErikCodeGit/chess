@@ -64,86 +64,84 @@ class Piece
 
   # visible means direct line of sight
   def visible_squares_in_column
-    all_pieces = @board.all_pieces_in_column(@position[1])
-    piece_below = previous_piece_in_array(all_pieces, @position)
-    piece_above = next_piece_in_array(all_pieces, @position)
-    [piece_below, piece_above].compact.map(&:position)
+    all_positions = @board.all_positions_in_column(@position[1])
+    position_below = previous_piece_position_in_array(all_positions, @position)
+    position_above = next_piece_position_in_array(all_positions, @position)
+    [position_below, position_above]
   end
 
   def visible_squares_in_row
-    all_pieces = @board.all_pieces_in_row(@position[0])
-    piece_left = previous_piece_in_array(all_pieces, @position)
-    piece_right = next_piece_in_array(all_pieces, @position)
-    [piece_left, piece_right].compact.map(&:position)
+    all_positions = @board.all_positions_in_row(@position[0])
+    position_left = previous_piece_position_in_array(all_positions, @position)
+    position_right = next_piece_position_in_array(all_positions, @position)
+    [position_left, position_right]
   end
 
   def visible_squares_in_ascending_diagonal
-    all_pieces = @board.all_pieces_in_ascending_diagonal(@position)
-    piece_before = previous_piece_in_array(all_pieces, @position)
-    piece_after = next_piece_in_array(all_pieces, @position)
-    [piece_before, piece_after].compact.map(&:position)
+    all_positions = @board.all_positions_in_ascending_diagonal(@position)
+    position_before = previous_piece_position_in_array(all_positions, @position)
+    position_after = next_piece_position_in_array(all_positions, @position)
+    [position_before, position_after]
   end
 
   def visible_squares_in_descending_diagonal
-    all_pieces = @board.all_pieces_in_descending_diagonal(@position)
-    piece_before = previous_piece_in_array(all_pieces, @position)
-    piece_after = next_piece_in_array(all_pieces, @position)
-    [piece_before, piece_after].compact.map(&:position)
+    all_positions = @board.all_positions_in_descending_diagonal(@position)
+    position_before = previous_piece_position_in_array(all_positions, @position)
+    position_after = next_piece_position_in_array(all_positions, @position)
+    [position_before, position_after]
   end
 
   def all_visible_squares_in_column
     result = []
     visible_squares_in_column.each do |position|
-      result << @board.positions_in_column(@position, position)
+      result |= @board.positions_in_column(@position, position)
     end
-    result.compact.uniq.flatten(1)
+    result.uniq
   end
 
   def all_visible_squares_in_row
     result = []
-    visible_squares_in_column.each do |position|
-      result << @board.positions_in_row(@position, position)
+    visible_squares_in_row.each do |position|
+      result |= @board.positions_in_row(@position, position)
     end
-    result.compact.uniq.flatten(1)
+    result.uniq
   end
 
   def all_visible_squares_in_ascending_diagonal
     result = []
     visible_squares_in_ascending_diagonal.each do |position|
-      result << @board.positions_in_ascending_diagonal(@position, position)
+      result |= @board.positions_in_ascending_diagonal(@position, position)
     end
-    result.compact.uniq.flatten(1)
+    result.uniq
   end
 
   def all_visible_squares_in_descending_diagonal
     result = []
     visible_squares_in_descending_diagonal.each do |position|
-      result << @board.positions_in_descending_diagonal(@position, position)
+      result |= @board.positions_in_descending_diagonal(@position, position)
     end
-    result.compact.uniq.flatten(1)
+    result.uniq
   end
 
-  def next_piece_in_array(pieces, reference_point)
+  def next_piece_position_in_array(positions, reference_point)
     next_piece = nil
-    pieces.compact.each do |piece|
-      position = piece.position
+    positions.each do |position|
       next if position[0] <= reference_point[0] && position[1] <= reference_point[1]
 
       next_piece = @board.piece_at(position)
       break if next_piece.is_a?(Piece)
     end
-    next_piece
+    next_piece.nil? ? positions.last : next_piece.position
   end
 
-  def previous_piece_in_array(pieces, reference_point)
+  def previous_piece_position_in_array(positions, reference_point)
     previous_piece = nil
-    pieces.compact.each do |piece|
-      position = piece.position
+    positions.each do |position|
       break if position[0] >= reference_point[0] && position[1] >= reference_point[1]
 
       previous_piece = @board.piece_at(position)
     end
-    previous_piece
+    previous_piece.nil? ? positions.first : previous_piece.position
   end
 
   def move_out_of_bounds?(move)
