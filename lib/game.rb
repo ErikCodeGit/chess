@@ -35,6 +35,7 @@ class Game
       start_position = prompt_player_move_start
       end_position = prompt_player_move_end(start_position)
       @board.move_piece(start_position, end_position, @current_player)
+      handle_promotion(end_position) if @board.promotion?(end_position)
       break if winner
       break if draw
 
@@ -74,5 +75,9 @@ class Game
 
   def handle_checks
     display_check if @board.white_king_in_check? || @board.black_king_in_check?
+  end
+
+  def handle_promotion(end_position)
+    @board.promote(end_position, prompt_promotion)
   end
 end

@@ -7,15 +7,9 @@ include Display
 Dir['./lib/pieces/*.rb'].sort.each { |file| require file }
 
 @board = Board.new
-@board.set_piece_at([0, 0], King.new(:white, [0, 0], @board))
-@board.set_piece_at([1, 2], King.new(:black, [1, 2], @board))
-@board.set_piece_at([1, 1], Rook.new(:black, [1, 1], @board))
-@board.white_king = @board.piece_at([0, 0])
-@board.black_king = @board.piece_at([1, 2])
+@board.set_up_board
+@board.set_piece_at([6, 4], Queen.new(:black, [6, 4], @board))
 display_board
-pablo = Player.new(:white, 1, 'pablo')
-gus = Player.new(:black, 2, 'gus')
-pablo.king = @board.white_king
-gus.king = @board.black_king
-p @board.stalemate?(pablo)
-p @board.white_king.valid_moves
+
+p @board.white_king_in_check?
+p @board.piece_at([6, 4]).all_visible_squares.map { |coordinates| Board.unparse_coordinates(coordinates) }

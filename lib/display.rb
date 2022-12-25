@@ -35,11 +35,14 @@ module Display
   def prompt_player_move_start
     print "#{@current_player.name}, enter the position of the piece you want to move: "
     position = ''
+    movable_pieces_coordinates = @board.movable_pieces_positions(@current_player.color).map do |coordinates|
+      Board.unparse_coordinates(coordinates)
+    end
     loop do
       position = gets.chomp
       break if valid_start_input?(position)
 
-      print 'Please enter a valid position: '
+      print "Please enter a valid position (#{movable_pieces_coordinates.join(', ')}): "
     end
     display_horizontal_row
     Board.parse_coordinates(position)
@@ -124,6 +127,19 @@ module Display
 
   def display_check_mate(player_in_mate)
     puts "#{player_in_mate.name} is in checkmate".red
+  end
+
+  def prompt_promotion
+    puts 'What shall your pawn become?'.green
+    puts '(Q)ueen, (R)ook, (K)night or (B)ishop?:'.green
+    response = ''
+    loop do
+      response = gets.chomp
+      break if response.match(/^[qrkb]/i)
+
+      puts 'Please enter a valid piece:'
+    end
+    response[0].downcase
   end
 
   def piece_to_string(piece)

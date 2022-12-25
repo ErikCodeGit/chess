@@ -82,6 +82,27 @@ class Board
     @grid[position[0]][position[1]]
   end
 
+  def promote(position, promotion)
+    pawn_before_promotion = piece_at(position)
+    new_piece = nil
+    case promotion
+    when 'q'
+      new_piece = Queen.new(pawn_before_promotion.color, position, self)
+    when 'r'
+      new_piece = Rook.new(pawn_before_promotion.color, position, self)
+    when 'k'
+      new_piece = Knight.new(pawn_before_promotion.color, position, self)
+    when 'b'
+      new_piece = Bishop.new(pawn_before_promotion.color, position, self)
+    end
+    set_piece_at(position, new_piece)
+  end
+
+  def promotion?(position)
+    piece = piece_at((position))
+    piece.is_a?(Pawn) && piece.position[0] == (piece.color == :white ? 7 : 0)
+  end
+
   def pieces_at(positions)
     result = []
     positions.each do |position|
@@ -401,6 +422,15 @@ class Board
       !white_king_in_check? && !white_has_valid_moves?
     when :black
       !black_king_in_check? && !black_has_valid_moves?
+    end
+  end
+
+  def movable_pieces_positions(color)
+    case color
+    when :white
+      all_white_pieces.reject { |piece| piece.valid_moves.empty? }.map(&:position)
+    when :black
+      all_black_pieces.reject { |piece| piece.valid_moves.empty? }.map(&:position)
     end
   end
 end
