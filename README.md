@@ -3,5 +3,3 @@
 [y , x]
 
 ## TODO
-+ tile background
-+ (piece highlighting?)

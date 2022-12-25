@@ -36,6 +36,7 @@ class Game
       break if check_resign(start_position)
       break if check_draw_agreement(start_position)
 
+      display_board(start_position)
       end_position = prompt_player_move_end(start_position)
       @board.move_piece(start_position, end_position, @current_player)
       handle_promotion(end_position) if @board.promotion?(end_position)

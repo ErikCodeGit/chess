@@ -105,18 +105,31 @@ module Display
       valid_move?(start_position, Board.parse_coordinates(end_position))
   end
 
-  def display_board
+  def display_board(selected_position = nil)
     row_number = 8
     @board.grid.reverse.each_with_index do |row, index_y|
       print "#{row_number} "
       row_number -= 1
       row.each_with_index do |piece, index_x|
-        print "#{piece_to_string(piece, [index_y, index_x])} "
+        print "#{piece_to_string(piece,
+                                 [index_y, index_x])} ".colorize(piece_color([7 - index_y, index_x], selected_position))
       end
       puts
     end
     puts '  a b c d e f g h'
     display_horizontal_row
+  end
+
+  def piece_color(position, selected_position)
+    if selected_position == position
+      :magenta
+    elsif !selected_position.nil? && @board.piece_at(selected_position).valid_moves.map do |move|
+            add(move, selected_position)
+          end.include?(position)
+      :blue
+    else
+      :default
+    end
   end
 
   def display_flipped_board
