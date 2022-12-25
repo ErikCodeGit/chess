@@ -40,6 +40,8 @@ module Display
     end
     loop do
       position = gets.chomp
+      return 'resign' if resign_offer?(position) && confirm_resign_offer?
+      return 'draw' if draw_offer?(position) && confirm_draw_offer?
       break if valid_start_input?(position)
 
       print "Please enter a valid position (#{movable_pieces_coordinates.join(', ')}): "
@@ -63,6 +65,30 @@ module Display
     end
     display_horizontal_row
     Board.parse_coordinates(end_position)
+  end
+
+  def resign_offer?(position)
+    position.match(/resign/i)
+  end
+
+  def draw_offer?(position)
+    position.match(/draw/i)
+  end
+
+  def confirm_resign_offer?
+    print "#{@current_player.name}, are you sure you want to resign?: "
+    confirmed = gets.chomp.match(/^y/i)
+    display_horizontal_row
+    confirmed
+  end
+
+  def confirm_draw_offer?
+    print "#{@current_player.name}, are you sure you want to propose a draw?: "
+    confirmed1 = gets.chomp.match(/^y/i)
+    print "#{next_player.name}, do you accept the draw?: "
+    confirmed2 = gets.chomp.match(/^y/i)
+    display_horizontal_row
+    confirmed1 && confirmed2
   end
 
   def valid_start_input?(start_position)
@@ -108,14 +134,17 @@ module Display
   end
 
   def display_winner_message
-    puts 'Checkmate!'.red
-    display_horizontal_row
-    puts "#{winner.name} wins!".green
+    if @board.player_in_checkmate?(@player1) || @board.player_in_checkmate?(@player2)
+      puts 'Checkmate!'.red
+      display_horizontal_row
+    end
+    puts "#{@winner.name} wins!".green
     display_horizontal_row
   end
 
   def display_draw_message
     puts "It's a draw!".blue
+    display_horizontal_row
   end
 
   def display_check

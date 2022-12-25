@@ -24,8 +24,8 @@ class Game
     create_player_names
     game_loop
     display_board
-    display_winner_message if winner
-    display_draw_message if draw
+    display_winner_message if @winner
+    display_draw_message if @draw
   end
 
   def game_loop
@@ -33,14 +33,31 @@ class Game
       display_board
       handle_checks
       start_position = prompt_player_move_start
+      break if check_resign(start_position)
+      break if check_draw_agreement(start_position)
+
       end_position = prompt_player_move_end(start_position)
       @board.move_piece(start_position, end_position, @current_player)
       handle_promotion(end_position) if @board.promotion?(end_position)
-      break if winner
-      break if draw
+      check_winner
+      check_draw
+      break if @winner
+      break if @draw
 
       flip_current_player
     end
+  end
+
+  def check_resign(start_position)
+    return unless start_position.is_a?(String) && start_position == 'resign'
+
+    @winner = next_player
+  end
+
+  def check_draw_agreement(start_position)
+    return unless start_position.is_a?(String) && start_position == 'draw'
+
+    @draw = true
   end
 
   def display_board_for_current_player
@@ -51,13 +68,13 @@ class Game
     end
   end
 
-  def winner
-    @player1 if @board.player_in_checkmate?(@player2)
-    @player2 if @board.player_in_checkmate?(@player1)
+  def check_winner
+    @winner = @player1 if @board.player_in_checkmate?(@player2)
+    @winner = @player2 if @board.player_in_checkmate?(@player1)
   end
 
-  def draw
-    @board.stalemate?(@current_player)
+  def check_draw
+    @draw = @board.stalemate?(@current_player)
   end
 
   def flip_current_player
@@ -79,5 +96,14 @@ class Game
 
   def handle_promotion(end_position)
     @board.promote(end_position, prompt_promotion)
+  end
+
+  def next_player
+    case @current_player
+    when @player1
+      @player2
+    when @player2
+      @player1
+    end
   end
 end
