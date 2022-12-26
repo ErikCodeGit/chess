@@ -6,14 +6,15 @@ class King < Piece
     return false if move_out_of_bounds?(move)
     return false if suicide?(move) || expose_king_to_mate?(move)
 
-    movement_pattern.include?(move) &&
-      (!piece_blocking_move?(move) || can_take?(move))
+    ((movement_pattern - castling_pattern).include?(move) &&
+      (!piece_blocking_move?(move) || can_take?(move))) ||
+      (!piece_blocking_move?(move) && can_castle?(move))
   end
 
   def movement_pattern
     [[1, - 1], [1, 0], [1, 1],
      [0, -1],           [0, 1],
-     [-1, -1], [-1, 0], [-1, 1]]
+     [-1, -1], [-1, 0], [-1, 1]] | castling_pattern
   end
 
   def piece_blocking_move?(move)
@@ -27,7 +28,9 @@ class King < Piece
   end
 
   def all_visible_squares
-    movement_pattern.map { |move| add(@position, move) }.delete_if { |move| move_out_of_bounds?(move) }
+    (movement_pattern - castling_pattern).delete_if { |move| move_out_of_bounds?(move) }.map do |move|
+      add(@position, move)
+    end
   end
 
   def can_take?(move)
@@ -54,5 +57,26 @@ class King < Piece
     when :black
       @board.squares_attacked_by_white.include?(add(@position, move))
     end
+  end
+
+  def castling_pattern
+    [[0, 2], [0, -2]]
+  end
+
+  def can_castle?(move)
+    position_after_move = add(@position, move)
+    position_of_castling_piece = add(move[1].positive? ? [0, 1] : [0, -2], position_after_move)
+    piece_castling_with = @board.piece_at(position_of_castling_piece)
+    return false if piece_castling_with.nil?
+
+    squares_along_move = @board.positions_in_row(@position, position_after_move)
+    !@moved && castling_pattern.include?(move) &&
+      !piece_castling_with.moved && piece_castling_with.is_a?(Rook) &&
+      case @color
+      when :white
+        !@board.squares_attacked_by_black.include?(squares_along_move)
+      when :black
+        !@board.squares_attacked_by_white.include?(squares_along_move)
+      end
   end
 end

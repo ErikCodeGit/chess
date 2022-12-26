@@ -15,7 +15,7 @@ class Knight < Piece
   end
 
   def attacked_squares
-    movement_pattern.reject { |move| move_out_of_bounds?(move) }
+    movement_pattern.reject { |move|  move_out_of_bounds?(move) }.map { |move| add(@position, move) }
   end
 
   def piece_blocking_move?(move)

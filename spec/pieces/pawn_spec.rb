@@ -68,6 +68,9 @@ describe Pawn do
   end
 
   describe '#can_take?' do
+    before do
+      board.set_up_board
+    end
     context 'when white pawn is 1 below and left of black pawn' do
       let(:board) { Board.new }
       subject(:white_pawn) { described_class.new(:white, [1, 0], board) }
@@ -111,6 +114,9 @@ describe Pawn do
 
   describe '#valid_move?' do
     let(:board) { Board.new }
+    before do
+      board.set_up_board
+    end
     subject(:white_pawn) { board.piece_at([1, 0]) }
     subject(:black_pawn) { described_class.new(:black, [2, 1], board) }
     context 'when white pawn is in start position and black pawn up-right' do
@@ -154,6 +160,9 @@ describe Pawn do
 
   describe '#piece_blocking_move?' do
     let(:board) { Board.new }
+    before do
+      board.set_up_board
+    end
     subject(:white_pawn) { board.piece_at([1, 0]) }
     subject(:black_pawn) { described_class.new(:black, [2, 0], board) }
     context 'when there is a black pawn in front of a white pawn and white pawn tries to move 1 up' do

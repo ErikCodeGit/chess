@@ -31,6 +31,9 @@ describe Board do
   let(:pablo) { Player.new(:white, 1, 'Pablo') }
   let(:gus) { Player.new(:black, 2, 'Gus') }
   describe '#move_piece' do
+    before do
+      board.set_up_board
+    end
     context 'when moving a pawn from a2 to a3' do
       it 'moves the pawn to a3' do
         a2_parsed = board_class.parse_coordinates('a2')
@@ -65,17 +68,20 @@ describe Board do
 
   describe '#pieces_in_ascending_diagonal' do
     subject(:board) { described_class.new }
+    before do
+      board.set_up_board
+    end
     context 'on a start board' do
       context 'when calling from c1 to f4' do
-        it 'returns an array with a white pawn and bishop' do
-          correct_array = [board.piece_at([0, 2]), board.piece_at([1, 3])]
+        it 'returns an array with a white pawn' do
+          correct_array = [board.piece_at([1, 3])]
           expect(board.pieces_in_ascending_diagonal([0, 2], [3, 5]).compact).to match_array(correct_array)
         end
       end
 
       context 'when calling from a1 to h8' do
-        it 'returns an array with a white rook, pawn, black pawn, rook' do
-          correct_array = [board.piece_at([0, 0]), board.piece_at([1, 1]), board.piece_at([6, 6]),
+        it 'returns an array with a white pawn, black pawn, rook' do
+          correct_array = [board.piece_at([1, 1]), board.piece_at([6, 6]),
                            board.piece_at([7, 7])]
           expect(board.pieces_in_ascending_diagonal([0, 0], [7, 7]).compact).to match_array(correct_array)
         end
@@ -85,17 +91,20 @@ describe Board do
 
   describe '#pieces_in_descending_diagonal' do
     subject(:board) { described_class.new }
+    before do
+      board.set_up_board
+    end
     context 'on a start board' do
       context 'when calling from c8 to e6' do
-        it 'returns an array with a black pawn and bishop' do
-          correct_array = [board.piece_at([7, 2]), board.piece_at([6, 3])]
+        it 'returns an array with a black pawn' do
+          correct_array = [board.piece_at([6, 3])]
           expect(board.pieces_in_descending_diagonal([7, 2], [5, 4]).compact).to match_array(correct_array)
         end
       end
 
       context 'when calling from a8 to h1' do
-        it 'returns an array with a black rook, pawn, white pawn, rook' do
-          correct_array = [board.piece_at([7, 0]), board.piece_at([6, 1]), board.piece_at([1, 6]),
+        it 'returns an array with a black pawn, white pawn, rook' do
+          correct_array = [board.piece_at([6, 1]), board.piece_at([1, 6]),
                            board.piece_at([0, 7])]
           expect(board.pieces_in_descending_diagonal([7, 0], [0, 7]).compact).to match_array(correct_array)
         end
@@ -209,6 +218,18 @@ describe Board do
       it 'returns the right moves' do
         shifted_diagonal = [[1, -1], [0, 0], [-1, 1], [-2, 2], [-3, 3], [-4, 4]]
         expect(board.generate_descending_diagonal_moves([6, 3])).to match_array(shifted_diagonal)
+      end
+    end
+  end
+
+  describe '#deep_copy' do
+    subject(:board) { described_class.new }
+    before do
+      board.set_up_board
+    end
+    context 'when called on a start board' do
+      it 'returns the proper copy of the board' do
+        expect(board.squares_attacked_by_black).to eq(board.deep_copy.squares_attacked_by_black)
       end
     end
   end

@@ -5,8 +5,7 @@ require './lib/helper'
 class Piece
   include Vectors
   include Helper
-  attr_reader :color, :position
-  attr_accessor :board
+  attr_accessor :color, :position, :board, :moved
 
   def initialize(color, position, board)
     @position = position
@@ -20,6 +19,12 @@ class Piece
     @position = add(move, @position)
     @board.set_piece_at(@position, self)
     @moved = true
+  end
+
+  def deep_copy(new_board = @board)
+    copy = Piece.new(@color, @position, new_board)
+    copy.moved = @moved
+    copy
   end
 
   def valid_move?(move); end
@@ -94,7 +99,9 @@ class Piece
   def all_visible_squares_in_column
     result = []
     visible_squares_in_column.each do |position|
-      result |= @board.positions_in_column(@position, position)
+      next if (squares = @board.positions_in_column(@position, position)).nil?
+
+      result |= squares
     end
     result.uniq
   end
@@ -102,7 +109,9 @@ class Piece
   def all_visible_squares_in_row
     result = []
     visible_squares_in_row.each do |position|
-      result |= @board.positions_in_row(@position, position)
+      next if (squares = @board.positions_in_row(@position, position)).nil?
+
+      result |= squares
     end
     result.uniq
   end
@@ -110,7 +119,9 @@ class Piece
   def all_visible_squares_in_ascending_diagonal
     result = []
     visible_squares_in_ascending_diagonal.each do |position|
-      result |= @board.positions_in_ascending_diagonal(@position, position)
+      next if (squares = @board.positions_in_ascending_diagonal(@position, position)).nil?
+
+      result |= squares
     end
     result.uniq
   end
@@ -118,7 +129,9 @@ class Piece
   def all_visible_squares_in_descending_diagonal
     result = []
     visible_squares_in_descending_diagonal.each do |position|
-      result |= @board.positions_in_descending_diagonal(@position, position)
+      next if (squares = @board.positions_in_descending_diagonal(@position, position)).nil?
+
+      result |= squares
     end
     result.uniq
   end

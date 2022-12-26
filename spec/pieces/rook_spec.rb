@@ -6,6 +6,9 @@ require './lib/board'
 describe Rook do
   describe '#piece_blocking_move?' do
     let(:board) { Board.new }
+    before do
+      board.set_up_board
+    end
     subject(:white_rook) { board.piece_at([0, 0]) }
     subject(:black_rook) { board.piece_at([7, 0]) }
     context 'when board is in start position and white rook tries to move 3 up' do
@@ -41,6 +44,9 @@ describe Rook do
 
   describe '#attacked_squares' do
     let(:board) { Board.new }
+    before do
+      board.set_up_board
+    end
     subject(:white_rook) { board.piece_at([0, 0]) }
     subject(:black_rook) { board.piece_at([7, 0]) }
     context 'when board is in start position' do

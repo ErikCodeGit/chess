@@ -6,6 +6,9 @@ require './lib/board'
 describe Knight do
   describe '#valid_move?' do
     let(:board) { Board.new }
+    before do
+      board.set_up_board
+    end
     subject(:white_knight) { board.piece_at([0, 1]) }
     subject(:black_knight) { board.piece_at([7, 1]) }
     context 'on a starting board' do

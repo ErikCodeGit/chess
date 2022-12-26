@@ -18,8 +18,8 @@ class Board
       row.each do |piece|
         next if piece.nil?
 
-        result.set_piece_at(piece.position, piece_at(piece.position).clone)
-        result.piece_at(piece.position).board = result
+        result.set_piece_at(piece.position, piece.clone)
+        result.piece_at(piece.position).board = result unless result.piece_at(piece.position).nil?
       end
     end
     result.white_king = @white_king.clone
@@ -51,7 +51,8 @@ class Board
   end
 
   def move_piece(start_position, end_position, current_player = nil, current_player_color = nil)
-    piece = piece_at(start_position)
+    return if (piece = piece_at(start_position)).nil?
+
     if current_player
       player_color = current_player.color
     elsif current_player_color
@@ -59,15 +60,42 @@ class Board
     end
     return unless piece.color == player_color
 
-    piece.move(subtract(end_position, start_position))
+    move = subtract(end_position, start_position)
+    if piece.is_a?(King) && piece.castling_pattern.include?(move)
+      castle(start_position, move)
+    else
+      piece.move(move)
+    end
+  end
+
+  def castle(start_position, move)
+    king = piece_at(start_position)
+    king_position_after_move = add(start_position, move)
+    position_of_castling_piece = add(move[1].positive? ? [0, 1] : [0, -2], king_position_after_move)
+    piece_castling_with = piece_at(position_of_castling_piece)
+    return if piece_castling_with.nil?
+
+    position_of_castling_piece_after_move = add(king_position_after_move, move[1].positive? ? [0, -1] : [0, 1])
+    king.move(subtract(king_position_after_move, start_position))
+    piece_castling_with.move(subtract(position_of_castling_piece_after_move, position_of_castling_piece))
   end
 
   def remove_piece(position)
     @grid[position[0]][position[1]] = nil
+    if position == @white_king.position
+      @white_king = nil
+    elsif position == @black_king.position
+      @black_king = nil
+    end
   end
 
   def set_piece_at(position, piece)
     @grid[position[0]][position[1]] = piece
+    if piece.is_a?(King) && piece.color == :white
+      @white_king = piece
+    elsif piece.is_a?(King) && piece.color == :black
+      @black_king = piece
+    end
   end
 
   def self.parse_coordinates(coordinates)
@@ -356,9 +384,9 @@ class Board
   def squares_attacked_by_black
     result = []
     all_black_pieces.each do |piece|
-      next if piece.nil? || piece.attacked_squares.nil?
+      next if piece.nil? || (attacked_squares_of_piece = piece.attacked_squares).nil?
 
-      result |= piece.attacked_squares
+      result |= attacked_squares_of_piece
     end
     result
   end

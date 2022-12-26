@@ -6,6 +6,9 @@ require './lib/board'
 describe Bishop do
   describe '#piece_blocking_move?' do
     let(:board) { Board.new }
+    before do
+      board.set_up_board
+    end
     subject(:white_bishop) { board.piece_at([0, 2]) }
     subject(:black_bishop) { board.piece_at([7, 2]) }
     context 'when board is in start position and white bishop tries to move to f4' do
@@ -41,6 +44,9 @@ describe Bishop do
 
   describe '#attacked_squares' do
     let(:board) { Board.new }
+    before do
+      board.set_up_board
+    end
     subject(:white_bishop) { board.piece_at([0, 2]) }
     subject(:black_bishop) { board.piece_at([7, 2]) }
     context 'when board is in start position' do
