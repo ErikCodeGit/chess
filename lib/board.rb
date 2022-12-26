@@ -374,9 +374,9 @@ class Board
   def squares_attacked_by_white
     result = []
     all_white_pieces.each do |piece|
-      next if piece.nil? || piece.attacked_squares.nil?
+      next if piece.nil? || (attacked_squares_of_piece = piece.attacked_squares).nil?
 
-      result |= piece.attacked_squares
+      result |= attacked_squares_of_piece
     end
     result
   end

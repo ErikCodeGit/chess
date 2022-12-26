@@ -22,9 +22,12 @@ end
 
 @board = Board.new
 @board.set_up_board
-@board.remove_piece([0, 5])
-@board.remove_piece([0, 6])
-@board.set_piece_at([1, 7], Knight.new(:black, [1, 7], @board))
+@board.remove_piece([1, 4])
+@board.remove_piece([1, 3])
+@board.remove_piece([6, 3])
+@board.move_piece([7, 3], [6, 3], nil, :black)
+@board.move_piece([0, 4], [1, 3], nil, :white)
+@board.move_piece([0, 5], [4, 1], nil, :white)
 test_display_board
 
 p @board.white_king.valid_moves
