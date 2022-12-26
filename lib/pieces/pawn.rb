@@ -4,13 +4,12 @@ require './lib/pieces/piece'
 class Pawn < Piece
   def valid_move?(move)
     return false if move_out_of_bounds?(move)
-    return false if expose_king_to_mate?(move)
 
     if taking_pattern.include?(move)
       can_take?(move)
     else
       (normal_move?(move) || double_move?(move)) && !piece_blocking_move?(move)
-    end
+    end && !expose_king_to_mate?(move)
   end
 
   def piece_blocking_move?(move)

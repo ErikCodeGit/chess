@@ -4,10 +4,9 @@ require './lib/pieces/piece'
 class Knight < Piece
   def valid_move?(move)
     return false if move_out_of_bounds?(move)
-    return false if expose_king_to_mate?(move)
 
-    movement_pattern.include?(move) &&
-      (!piece_blocking_move?(move) || can_take?(move))
+   (movement_pattern.include?(move) &&
+      (!piece_blocking_move?(move) || can_take?(move))) && !expose_king_to_mate?(move)
   end
 
   def movement_pattern

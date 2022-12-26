@@ -4,11 +4,10 @@ require './lib/pieces/piece'
 class King < Piece
   def valid_move?(move)
     return false if move_out_of_bounds?(move)
-    return false if suicide?(move) || expose_king_to_mate?(move)
 
-    ((movement_pattern - castling_pattern).include?(move) &&
+    (((movement_pattern - castling_pattern).include?(move) &&
       (!piece_blocking_move?(move) || can_take?(move))) ||
-      (!piece_blocking_move?(move) && can_castle?(move))
+      (!piece_blocking_move?(move) && can_castle?(move))) && !(suicide?(move) || expose_king_to_mate?(move))
   end
 
   def movement_pattern
@@ -74,9 +73,9 @@ class King < Piece
       !piece_castling_with.moved && piece_castling_with.is_a?(Rook) &&
       case @color
       when :white
-        !@board.squares_attacked_by_black.include?(squares_along_move)
+        (@board.squares_attacked_by_black & squares_along_move).empty?
       when :black
-        !@board.squares_attacked_by_white.include?(squares_along_move)
+        (@board.squares_attacked_by_white & squares_along_move).empty?
       end
   end
 end

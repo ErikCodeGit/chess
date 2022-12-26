@@ -35,7 +35,7 @@ module Display
   def prompt_player_move_start
     print "#{@current_player.name}, enter the position of the piece you want to move: "
     position = ''
-    movable_pieces_coordinates = @board.movable_pieces_positions(@current_player.color).map do |coordinates|
+    movable_pieces_coordinates = @movable_pieces_positions.map do |coordinates|
       Board.unparse_coordinates(coordinates)
     end
     loop do
@@ -44,6 +44,7 @@ module Display
       return 'draw' if draw_offer?(position) && confirm_draw_offer?
       break if valid_start_input?(position)
 
+      display_board(nil, true)
       print "Please enter a valid position (#{movable_pieces_coordinates.join(', ')}): "
     end
     display_horizontal_row
@@ -105,14 +106,17 @@ module Display
       valid_move?(start_position, Board.parse_coordinates(end_position))
   end
 
-  def display_board(selected_position = nil)
+  def display_board(selected_position = nil, highlight_movable_pieces = false)
+    update_movable_pieces
     row_number = 8
     @board.grid.reverse.each_with_index do |row, index_y|
       print "#{row_number} "
       row_number -= 1
       row.each_with_index do |piece, index_x|
         print "#{piece_to_string(piece,
-                                 [index_y, index_x])} ".colorize(piece_color([7 - index_y, index_x], selected_position))
+                                 [index_y,
+                                  index_x])} ".colorize(piece_color([7 - index_y, index_x], selected_position,
+                                                                    highlight_movable_pieces))
       end
       puts
     end
@@ -120,30 +124,22 @@ module Display
     display_horizontal_row
   end
 
-  def piece_color(position, selected_position)
+  def update_movable_pieces
+    @movable_pieces_positions = @board.movable_pieces_positions(@current_player.color)
+  end
+
+  def piece_color(position, selected_position, highlight_movable_pieces)
     if selected_position == position
       :magenta
     elsif !selected_position.nil? && @board.piece_at(selected_position).valid_moves.map do |move|
             add(move, selected_position)
           end.include?(position)
       :blue
+    elsif highlight_movable_pieces && selected_position.nil? && @movable_pieces_positions.include?(position)
+      :green
     else
       :default
     end
-  end
-
-  def display_flipped_board
-    row_number = 1
-    @board.grid.each do |row|
-      print "#{row_number} "
-      row_number += 1
-      row.each do |piece|
-        print "#{piece_to_string(piece)} "
-      end
-      puts
-    end
-    puts '  a b c d e f g h'
-    display_horizontal_row
   end
 
   def display_winner_message
@@ -184,11 +180,8 @@ module Display
     response[0].downcase
   end
 
-  def piece_to_string(piece, position)
-    flip = ((position[0] % 2) + position[1]).odd?
-    if piece.nil?
-      return flip ? EMPTY_SYMBOL_DARK : EMPTY_SYMBOL_LIGHT
-    end
+  def piece_to_string(piece, _position)
+    return EMPTY_SYMBOL_LIGHT if piece.nil?
 
     color = piece.color
     if piece.instance_of?(Pawn)

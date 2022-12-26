@@ -16,6 +16,7 @@ class Game
     @board.set_up_board
     @player1.king = @board.white_king
     @player2.king = @board.black_king
+    update_movable_pieces
     start_game
   end
 

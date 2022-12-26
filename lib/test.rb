@@ -6,22 +6,25 @@ require './lib/player'
 include Display
 Dir['./lib/pieces/*.rb'].sort.each { |file| require file }
 
+def test_display_board
+  row_number = 8
+  @board.grid.reverse.each_with_index do |row, index_y|
+    print "#{row_number} "
+    row_number -= 1
+    row.each_with_index do |piece, index_x|
+      print "#{piece_to_string(piece, [index_y, index_x])} "
+    end
+    puts
+  end
+  puts '  a b c d e f g h'
+  display_horizontal_row
+end
+
 @board = Board.new
 @board.set_up_board
-@board.remove_piece([1, 1])
-@board.remove_piece([1, 2])
-@board.remove_piece([1, 3])
-@board.remove_piece([1, 4])
-@board.remove_piece([1, 5])
-@board.remove_piece([1, 6])
-@board.remove_piece([6, 1])
-@board.remove_piece([6, 2])
-@board.remove_piece([6, 3])
-@board.remove_piece([6, 4])
-@board.remove_piece([6, 5])
-@board.remove_piece([6, 6])
-@board.move_piece([7, 5], [3, 1], nil, :black)
-display_board
+@board.remove_piece([0, 5])
+@board.remove_piece([0, 6])
+@board.set_piece_at([1, 7], Knight.new(:black, [1, 7], @board))
+test_display_board
 
-p @board.white_king_in_check?
 p @board.white_king.valid_moves
